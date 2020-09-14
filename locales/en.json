@@ -240,5 +240,16 @@
       "incomes": "Incomes",
       "total": "Total"
     }
+  },
+
+  "socials": {
+    "vk": "VK",
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "link": "Enter link <social>",
+    "error": {
+      "invalid_link": "Invalid link",
+      "invalid_login_link": "Invalid login or link"
+    }
   }
 }

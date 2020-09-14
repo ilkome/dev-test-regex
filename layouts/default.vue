@@ -45,6 +45,9 @@ export default {
       if (routeName === 'login' && user !== null) {
         this.$router.replace('/')
       }
+      else if (routeName === 'regex') {
+        return
+      }
       else if (routeName !== 'login' && user === null) {
         this.$router.replace('login')
       }
