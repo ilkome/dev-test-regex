@@ -44,7 +44,7 @@ export default {
           name: 'Telegram',
           short: 'telegram',
           aliases: [
-            't.me'
+            't.me', 'www.t.me'
           ],
           protocol: [
             'tg://'
