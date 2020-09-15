@@ -122,26 +122,29 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-    section
-        width 100%
-        min-height 100vh
-        display flex
-        flex-direction column
-        align-items center
-        justify-content center
-        .input-group
-            margin 1rem 0
-            input
-                min-width 50vw
-                padding 0.75rem 1rem
-                border none
-                border-radius 0.25rem
-            a {
-                padding 1rem 0
-                color #FFF
-                text-decoration none
-                display block
-            }
-            .error
-                color red
+section
+  display flex
+  align-items center
+  justify-content center
+  width 100%
+  min-height 100vh
+  flex-direction column
+
+  .input-group
+    margin 1rem 0
+
+    input
+      min-width 50vw
+      padding .75rem 1rem
+      border none
+      border-radius .25rem
+
+    a
+      display block
+      padding 1rem 0
+      color #fff
+      text-decoration none
+
+    .error
+      color red
 </style>
