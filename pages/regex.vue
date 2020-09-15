@@ -38,7 +38,7 @@ export default {
           aliases: [
             'instagram.com', 'www.instagram.com'
           ],
-          pattern: 'https://www.instagram.com/<login>'
+          pattern: 'https://instagram.com/<login>'
         },
         {
           name: 'Telegram',
