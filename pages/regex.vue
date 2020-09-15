@@ -50,22 +50,47 @@ export default {
             'tg://'
           ],
           pattern: 'https://t.me/<login>'
+        },
+        {
+          // link viber://chat?number=%2B79159760715
+          name: 'Viber',
+          short: 'viber',
+          aliases: [
+          ],
+          protocol: [
+          ],
+          pattern: ''
+        },
+        {
+          // link https://wa.me/79159760715
+          name: 'WhatsApp',
+          short: 'whatsapp',
+          aliases: [
+            'wa.me'
+          ],
+          pattern: 'https://wa.me/<login>'
         }
       ],
       links: {
         vk: '',
         telegram: '',
-        instagram: ''
+        instagram: '',
+        whatsapp: '',
+        viber: ''
       },
       socialLinks: {
         vk: '',
         telegram: '',
-        instagram: ''
+        instagram: '',
+        whatsapp: '',
+        viber: ''
       },
       error: {
         vk: '',
         telegram: '',
-        instagram: ''
+        instagram: '',
+        whatsapp: '',
+        viber: ''
       }
     }
   },
