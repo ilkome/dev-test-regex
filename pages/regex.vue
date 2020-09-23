@@ -5,7 +5,7 @@
         )
             input(
                 type="text"
-                :placeholder="$lang.socials.link.replace('<social>', $lang.socials[social.short])"
+                :placeholder="$lang.socials.link.replace('<social>', social.name)"
                 v-model="links[social.short]"
                 @change="socialValidate(social.short)"
             )
@@ -20,123 +20,93 @@
 </template>
 
 <script>
+import { socials, blacklist, regex } from '../assets/js/socials'
+
 export default {
   data () {
     return {
-      socials: [
-        {
-          name: 'VK',
-          short: 'vk',
-          aliases: [
-            'vk.com', 'vkontakte.ru'
-          ],
-          pattern: 'https://vk.com/<login>'
-        },
-        {
-          name: 'Instagram',
-          short: 'instagram',
-          aliases: [
-            'instagram.com', 'www.instagram.com'
-          ],
-          pattern: 'https://instagram.com/<login>'
-        },
-        {
-          name: 'Telegram',
-          short: 'telegram',
-          aliases: [
-            't.me', 'www.t.me'
-          ],
-          protocol: [
-            'tg://'
-          ],
-          pattern: 'https://t.me/<login>'
-        },
-        {
-          // link viber://chat?number=%2B79159760715
-          name: 'Viber',
-          short: 'viber',
-          aliases: [
-          ],
-          protocol: [
-          ],
-          pattern: ''
-        },
-        {
-          // link https://wa.me/79159760715
-          name: 'WhatsApp',
-          short: 'whatsapp',
-          aliases: [
-            'wa.me'
-          ],
-          pattern: 'https://wa.me/<login>'
-        }
-      ],
+      socials,
+      regex,
+      blacklist,
       links: {
         vk: '',
         telegram: '',
+        skype: '',
         instagram: '',
         whatsapp: '',
-        viber: ''
+        viber: '',
+        other1: ''
       },
       socialLinks: {
         vk: '',
         telegram: '',
+        skype: '',
         instagram: '',
         whatsapp: '',
-        viber: ''
+        viber: '',
+        other1: ''
       },
       error: {
         vk: '',
         telegram: '',
+        skype: '',
         instagram: '',
         whatsapp: '',
-        viber: ''
+        viber: '',
+        other1: ''
       }
     }
   },
+  mounted () {
+    console.info(this.socials)
+  },
   methods: {
-    /**
-             * Валидация ссылок на соц. сети
-             */
     socialValidate (social) {
       // Сбрасываем значения
       this.error[social] = ''
       this.socialLinks[social] = ''
 
-      // Паттерн
-      const pattern = {
-        regex: /(?:(?<number>(?:!\+|)[0-9]{11}.*)|(?:(?<protocol>(?:http[s]?|tg):\/\/)|)(?:(?<domain>[a-zA-Z._-]+)\/|[a-z]+\?[a-z]+=)(?<login>(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}))/gmi,
-        login: /(?<login>(?!.*\.\.)(?!.*\.$)[^\W][\w.]{1,29})/gmi
-      }
-      // Очищаем от пробелов внутри
+      // Очищаем от пробелов
       const value = this.links[social].replace(/\s/g, '')
 
-      // Выдергиваем данные
-      const regex = pattern.regex.exec(value)
-      const login = pattern.login.exec(value)
-
-      console.info(regex, login)
-
-      // Перебираем массив с соц. сетями
+      // Проходимся по массиву
       for (const i in this.socials) {
         if (this.socials[i].short === social) {
-          if (regex !== null && (typeof regex.groups.domain !== 'undefined' || typeof regex.groups.protocol !== 'undefined')) {
-            // Если основной паттерн нашёл вхождения
-            // А также не пусты значения домена или протокола (для Telegram)
-            if (this.socials[i].aliases.includes(regex.groups.domain) || (typeof this.socials[i].protocol !== 'undefined' && this.socials[i].protocol.includes(regex.groups.protocol))) {
-              // Если алиас в массиве соц. сети или есть протокол
-              this.socialLinks[social] = this.socials[i].pattern.replace('<login>', regex.groups.login)
+          const item = this.socials[i]
+          // Если у элемента нет своего регулярного выражения, используем глобальное
+          if (!item.regex) {
+            item.regex = this.regex
+          }
+          // Если регулярное выражение что-то находит
+          if (item.regex.test(value)) {
+            const result = item.regex.exec(value).groups
+            // Если нужна проверка по чёрному списку
+            if (!!item.blacklist && !!result.domain && this.blacklist.includes(result.domain)) {
+              // Домен находится в чёрном списке
+              this.error[social] = this.$lang.socials.error.invalid_link_blacklist
+              return false
+            }
+            // Проверяем результат работы регулярного выражения
+            // Если есть домен и он есть у объекта
+            // Или
+            // Если есть протокол и он не http | https и он есть у объекта
+            // Или
+            // Нет домена и протокола, но есть логин
+            if ((!!result.domain && item.aliases.includes(result.domain)) || (!!result.protocol && (result.protocol !== 'http' || result.protocol !== 'https') && item.protocol.includes(result.protocol)) || (!result.domain && !result.protocol && !!result.login)) {
+              // Если есть регулярное выражение для логина и логин не валидный после проверки
+              if (!!item.login && item.login.test(result.login) && item.login.exec(result.login)[0] !== result.login) {
+                this.error[social] = this.$lang.socials.error.invalid_login_link
+                return false
+              }
+              // Публикуем логин
+              this.socialLinks[social] = item.pattern.replace('<login>', result.login)
             }
             else {
+              // Неправильная ссылка
               this.error[social] = this.$lang.socials.error.invalid_link
             }
-          }
-          else if (login !== null && login.input === login.groups.login) {
-            // Если паттерн для логина нашёл вхождения
-            this.socialLinks[social] = this.socials[i].pattern.replace('<login>', login.groups.login)
-          }
-          else {
-            // Если ничего не найдено, то ошибка
+          } else {
+            // Неправильная ссылка или логин
             this.error[social] = this.$lang.socials.error.invalid_login_link
           }
         }

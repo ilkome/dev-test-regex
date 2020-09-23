@@ -242,13 +242,11 @@
   },
 
   "socials": {
-    "vk": "ВКонтакте",
-    "instagram": "Instagram",
-    "telegram": "Telegram",
     "link": "Введите ссылку <social>",
     "error": {
       "invalid_link": "Неправильная ссылка",
-      "invalid_login_link": "Неправильная ссылка или логин"
+      "invalid_login_link": "Неправильная ссылка или логин",
+      "invalid_link_blacklist": "Домен находится в чёрном списке"
     }
   }
 }
