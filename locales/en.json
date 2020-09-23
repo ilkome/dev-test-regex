@@ -245,6 +245,7 @@
   "socials": {
     "link": "Enter link <social>",
     "error": {
+      "invalid_login": "Invalid login",
       "invalid_link": "Invalid link",
       "invalid_login_link": "Invalid login or link",
       "invalid_link_blacklist": "Domain is blacklisted"

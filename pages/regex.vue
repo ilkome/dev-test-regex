@@ -57,9 +57,6 @@ export default {
       }
     }
   },
-  mounted () {
-    console.info(this.socials)
-  },
   methods: {
     socialValidate (social) {
       // Сбрасываем значения
@@ -78,6 +75,7 @@ export default {
             item.regex = this.regex
           }
           // Если регулярное выражение что-то находит
+          console.info(item.regex.exec(value))
           if (item.regex.test(value)) {
             const result = item.regex.exec(value).groups
             // Если нужна проверка по чёрному списку
@@ -95,7 +93,7 @@ export default {
             if ((!!result.domain && item.aliases.includes(result.domain)) || (!!result.protocol && (result.protocol !== 'http' || result.protocol !== 'https') && item.protocol.includes(result.protocol)) || (!result.domain && !result.protocol && !!result.login)) {
               // Если есть регулярное выражение для логина и логин не валидный после проверки
               if (!!item.login && item.login.test(result.login) && item.login.exec(result.login)[0] !== result.login) {
-                this.error[social] = this.$lang.socials.error.invalid_login_link
+                this.error[social] = this.$lang.socials.error.invalid_login
                 return false
               }
               // Публикуем логин
@@ -105,7 +103,8 @@ export default {
               // Неправильная ссылка
               this.error[social] = this.$lang.socials.error.invalid_link
             }
-          } else {
+          }
+          else {
             // Неправильная ссылка или логин
             this.error[social] = this.$lang.socials.error.invalid_login_link
           }

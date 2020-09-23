@@ -19,6 +19,7 @@ export const socials = [
     protocol: [
       'instagram'
     ],
+    // login: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/m,
     pattern: 'https://www.instagram.com/<login>/'
   },
   {
@@ -30,6 +31,7 @@ export const socials = [
     protocol: [
       'tg'
     ],
+    login: /[a-zA-Z0-9_]{5,32}/,
     pattern: 'https://t.me/<login>'
   },
   {
